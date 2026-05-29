@@ -1,0 +1,104 @@
+<div class="row mt-4">
+    <aside class="col-lg-3 col-md-4 mb-4">
+        <div class="card border-0 shadow-sm p-4 position-relative" style="border-radius:12px;">
+            <form action="/products" method="GET" id="filterForm">
+                <h6 class="fw-bold mb-3">Categories</h6>
+                <% categories.forEach(function(cat) { %>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="category" value="<%= cat._id %>" id="cat<%= cat._id %>" onchange="this.form.submit()" <%= currentCategory === String(cat._id) ? 'checked' : '' %>>
+                        <label class="form-check-label text-muted" for="cat<%= cat._id %>"><%= cat.name %></label>
+                    </div>
+                <% }) %>
+
+                <hr>
+                <h6 class="fw-bold mb-3">Subcategories</h6>
+                <select name="subcategory" class="form-select mb-2" onchange="this.form.submit()" <%= currentCategory ? '' : 'disabled' %>>
+                    <option value=""><%= currentCategory ? 'All subcategories' : 'Select a category first' %></option>
+                    <% availableSubcategories.forEach(function(subcat) { %>
+                        <option value="<%= subcat._id %>" <%= currentSubcategory === String(subcat._id) ? 'selected' : '' %>><%= subcat.name %></option>
+                    <% }) %>
+                </select>
+                <p class="text-muted small mb-3">Subcategories belong to the selected category only.</p>
+
+                <hr>
+                <h6 class="fw-bold mb-3">Brand</h6>
+                <select name="brand" class="form-select mb-3" onchange="this.form.submit()">
+                    <option value="">All brands</option>
+                    <% brands.forEach(function(brand) { %>
+                        <option value="<%= brand %>" <%= currentBrand === brand ? 'selected' : '' %>><%= brand %></option>
+                    <% }) %>
+                </select>
+
+                <h6 class="fw-bold mb-3">Availability</h6>
+                <select name="stock" class="form-select mb-3" onchange="this.form.submit()">
+                    <option value="">All stock</option>
+                    <option value="in_stock" <%= currentStock === 'in_stock' ? 'selected' : '' %>>In stock</option>
+                    <option value="low_stock" <%= currentStock === 'low_stock' ? 'selected' : '' %>>Low stock</option>
+                    <option value="preorder" <%= currentStock === 'preorder' ? 'selected' : '' %>>Preorder</option>
+                    <option value="out_of_stock" <%= currentStock === 'out_of_stock' ? 'selected' : '' %>>Out of stock</option>
+                </select>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="sale" id="sale" onchange="this.form.submit()" <%= saleOnly ? 'checked' : '' %>>
+                    <label class="form-check-label" for="sale">Sale items only</label>
+                </div>
+
+                <h6 class="fw-bold mb-3">Price range</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-6"><input type="number" class="form-control" name="min_price" min="0" step="1000" value="<%= minPrice %>" placeholder="Min"></div>
+                    <div class="col-6"><input type="number" class="form-control" name="max_price" min="0" step="1000" value="<%= maxPrice %>" placeholder="Max"></div>
+                </div>
+
+                <h6 class="fw-bold mb-3">Sort</h6>
+                <select name="sort" class="form-select mb-3">
+                    <option value="newest" <%= currentSort === 'newest' ? 'selected' : '' %>>Newest</option>
+                    <option value="price_low" <%= currentSort === 'price_low' ? 'selected' : '' %>>Price: low to high</option>
+                    <option value="price_high" <%= currentSort === 'price_high' ? 'selected' : '' %>>Price: high to low</option>
+                    <option value="name" <%= currentSort === 'name' ? 'selected' : '' %>>Name</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary w-100 rounded-pill">Apply Filters</button>
+                <a href="/products" class="btn btn-link btn-sm w-100 mt-1 text-decoration-none text-muted">Clear All</a>
+            </form>
+        </div>
+    </aside>
+
+    <section class="col-lg-9 col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 fw-bold mb-0">Products</h1>
+            <span class="text-muted small"><%= products.length %> item<%= products.length === 1 ? '' : 's' %></span>
+        </div>
+        <div class="row g-4">
+            <% if (products.length) { %>
+                <% products.forEach(function(product) { %>
+                    <div class="col-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm product-card overflow-hidden" style="border-radius:12px;">
+                            <div class="p-3 bg-white text-center position-relative">
+                                <% if (product.bestSeller) { %><span class="badge badge-soft position-absolute top-0 start-0 m-2">Best seller</span><% } %>
+                                <img src="<%= product.imageUrl || 'https://via.placeholder.com/300?text=Product' %>" class="img-fluid" alt="<%= product.name %>" style="height:160px;object-fit:contain;">
+                            </div>
+                            <div class="card-body d-flex flex-column text-center">
+                                <h6 class="fw-bold mb-1"><%= product.name %></h6>
+                                <p class="text-muted small mb-2"><%= product.brand || '' %> <%= product.capacity ? '- ' + product.capacity : '' %></p>
+                                <p class="fs-5 fw-bold mb-1" style="color:var(--brand-green);">
+                                    <%= formatCurrency(product.onSale && product.salePrice ? product.salePrice : product.price) %>
+                                </p>
+                                <p class="small text-muted mb-3"><%= product.warranty || 'Warranty available' %></p>
+                                <div class="mt-auto">
+                                    <a href="/product/<%= product._id %>" class="btn btn-outline-primary btn-sm w-100 rounded-pill mb-2">Details</a>
+                                    <a href="https://wa.me/<%= storePhone %>?text=Hello%20from%20Tick%20Mark%20website!%20I%20need%20help%20with%20<%= encodeURIComponent(product.name) %>" class="btn btn-primary btn-sm w-100 rounded-pill">
+                                        <i class="bi bi-whatsapp"></i> Enquire Us
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-12 text-center py-5">
+                    <h4 class="text-muted">No products found matching these filters.</h4>
+                </div>
+            <% } %>
+        </div>
+    </section>
+</div>

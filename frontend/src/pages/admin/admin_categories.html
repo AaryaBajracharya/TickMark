@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold mb-0">Manage Categories</h1>
+    <div class="d-flex gap-2">
+        <a href="/admin/categories/add" class="btn btn-success rounded-pill">Add Category</a>
+        <a href="/admin/subcategories/add" class="btn btn-outline-primary rounded-pill">Add Subcategory</a>
+        <a href="/admin" class="btn btn-secondary rounded-pill">Dashboard</a>
+    </div>
+</div>
+
+<% if (categories.length) { %>
+    <div class="bg-white rounded-3 shadow-sm overflow-hidden">
+        <table class="table table-striped align-middle mb-0">
+            <thead>
+                <tr><th>Name</th><th>Slug</th><th>Products</th><th>Subcategories</th><th class="text-end">Actions</th></tr>
+            </thead>
+            <tbody>
+                <% categories.forEach(function(cat) { %>
+                    <tr>
+                        <td><%= cat.name %></td>
+                        <td><%= cat.slug %></td>
+                        <td><%= cat.products ? cat.products.length : 0 %></td>
+                        <td>
+                            <% if (cat.subcategories && cat.subcategories.length) { %>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <% cat.subcategories.forEach(function(subcat) { %>
+                                        <span class="badge bg-light text-dark border">
+                                            <%= subcat.name %>
+                                            <form method="post" action="/admin/subcategories/delete/<%= subcat._id %>" class="d-inline" onsubmit="return confirm('Delete <%= subcat.name %>?')">
+                                                <%- csrfInput %>
+                                                <button type="submit" class="btn btn-link btn-sm p-0 text-danger text-decoration-none align-baseline">&times;</button>
+                                            </form>
+                                        </span>
+                                    <% }) %>
+                                </div>
+                            <% } else { %>
+                                <span class="text-muted">None</span>
+                            <% } %>
+                        </td>
+                        <td class="text-end">
+                            <form method="post" action="/admin/categories/delete/<%= cat._id %>" class="d-inline" onsubmit="return confirm('Delete <%= cat.name %>? This cannot be undone.')">
+                                <%- csrfInput %>
+                                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+<% } else { %>
+    <p class="alert alert-info">No categories yet. Add one.</p>
+<% } %>

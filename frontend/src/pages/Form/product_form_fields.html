@@ -1,0 +1,165 @@
+<div class="mb-3">
+    <label class="fw-bold">Name</label>
+    <input type="text" name="name" class="form-control" value="<%= product ? product.name : '' %>" placeholder="e.g. Smart LED TV" required>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="fw-bold">Brand</label>
+        <input type="text" name="brand" class="form-control" value="<%= product ? (product.brand || '') : '' %>" placeholder="e.g. Samsung">
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="fw-bold">Model</label>
+        <input type="text" name="model" class="form-control" value="<%= product ? (product.model || '') : '' %>" placeholder="e.g. QLED-55">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="fw-bold">Price</label>
+        <input type="number" step="0.01" name="price" class="form-control" value="<%= product ? product.price : '' %>" required>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="fw-bold">Capacity</label>
+        <input type="text" name="capacity" class="form-control" value="<%= product ? (product.capacity || '') : '' %>" placeholder="e.g. 55 inch, 7 kg, 300 L">
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="fw-bold">Energy Rating</label>
+        <input type="text" name="energy_rating" class="form-control" value="<%= product ? (product.energyRating || '') : '' %>" placeholder="e.g. 5 star">
+    </div>
+</div>
+
+<div class="mb-3">
+    <label class="fw-bold">Description</label>
+    <textarea name="description" class="form-control" rows="3"><%= product ? (product.description || '') : '' %></textarea>
+</div>
+
+<div class="mb-3">
+    <label for="category_id" class="form-label fw-bold">Category <span class="text-danger">*</span></label>
+    <select class="form-select" id="category_id" name="category_id" required>
+        <option value="">-- Choose a category --</option>
+        <% categories.forEach(function(cat) { %>
+            <% const selected = product && String(product.category) === String(cat._id); %>
+            <option value="<%= cat._id %>" <%= selected ? 'selected' : '' %>><%= cat.name %></option>
+        <% }) %>
+    </select>
+    <small class="form-text text-muted">Missing a category? <a href="/admin/categories/add" target="_blank">Add new category</a></small>
+</div>
+
+<div class="mb-3">
+    <label for="subcategory_id" class="form-label fw-bold">Subcategory</label>
+    <select class="form-select" id="subcategory_id" name="subcategory_id">
+        <option value="">-- No subcategory --</option>
+        <% subcategories.forEach(function(subcat) { %>
+            <% const selected = product && String(product.subcategory || '') === String(subcat._id); %>
+            <option value="<%= subcat._id %>" data-category="<%= subcat.category ? String(subcat.category._id || subcat.category) : '' %>" <%= selected ? 'selected' : '' %>>
+                <%= subcat.name %><%= subcat.category && subcat.category.name ? ' - ' + subcat.category.name : '' %>
+            </option>
+        <% }) %>
+    </select>
+    <small class="form-text text-muted">Missing a subcategory? <a href="/admin/subcategories/add" target="_blank">Add new subcategory</a></small>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="fw-bold">Main Image URL</label>
+        <input type="text" name="image_url" class="form-control" value="<%= product ? (product.imageUrl || '') : '' %>" placeholder="https://...">
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="fw-bold">Gallery Image URLs</label>
+        <textarea name="gallery_images" class="form-control" rows="2" placeholder="One URL per line"><%= product && product.galleryImages ? product.galleryImages.join('\n') : '' %></textarea>
+    </div>
+</div>
+
+<script>
+(function () {
+    const categorySelect = document.getElementById('category_id');
+    const subcategorySelect = document.getElementById('subcategory_id');
+    if (!categorySelect || !subcategorySelect) return;
+
+    function syncSubcategories() {
+        const selectedCategory = categorySelect.value;
+        let selectedOptionStillValid = false;
+
+        Array.from(subcategorySelect.options).forEach(function (option) {
+            if (!option.value) return;
+            const matchesCategory = option.dataset.category === selectedCategory;
+            option.hidden = !matchesCategory;
+            option.disabled = !matchesCategory;
+            if (matchesCategory && option.selected) selectedOptionStillValid = true;
+        });
+
+        if (!selectedOptionStillValid) subcategorySelect.value = '';
+        subcategorySelect.disabled = !selectedCategory;
+    }
+
+    categorySelect.addEventListener('change', syncSubcategories);
+    syncSubcategories();
+})();
+</script>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="fw-bold">Stock Status</label>
+        <select name="stock_status" class="form-select">
+            <% ['in_stock', 'low_stock', 'out_of_stock', 'preorder'].forEach(function(status) { %>
+                <option value="<%= status %>" <%= product && product.stockStatus === status ? 'selected' : '' %>><%= status.replaceAll('_', ' ') %></option>
+            <% }) %>
+        </select>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="fw-bold">Warranty</label>
+        <input type="text" name="warranty" class="form-control" value="<%= product ? (product.warranty || '') : '1 year official warranty' %>">
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="fw-bold">Delivery Note</label>
+        <input type="text" name="delivery_note" class="form-control" value="<%= product ? (product.deliveryNote || '') : 'Delivery available in Kathmandu Valley' %>">
+    </div>
+</div>
+
+<div class="mb-3">
+    <label class="fw-bold">Specifications</label>
+    <textarea name="specs" class="form-control" rows="5" placeholder="Display: 55 inch 4K&#10;Compressor: Inverter&#10;Power: 1200 W"><%= product ? specsToText(product.specs) : '' %></textarea>
+    <small class="text-muted">Use one "Label: Value" pair per line.</small>
+</div>
+
+<hr>
+
+<div class="row bg-light p-3 rounded mb-3 g-3">
+    <div class="col-md-4">
+        <div class="form-check mb-2">
+            <input type="checkbox" name="on_sale" id="on_sale" class="form-check-input" <%= product && product.onSale ? 'checked' : '' %>>
+            <label class="form-check-label fw-bold" for="on_sale">Mark as On Sale</label>
+        </div>
+        <label class="small text-muted">Sale Price</label>
+        <input type="number" step="0.01" name="sale_price" class="form-control" value="<%= product && product.salePrice ? product.salePrice : '' %>">
+    </div>
+    <div class="col-md-8">
+        <div class="row g-2">
+            <div class="col-sm-6">
+                <div class="form-check form-switch p-3 border rounded bg-white h-100">
+                    <input type="checkbox" name="show_on_home" id="show_on_home" class="form-check-input" style="margin-left:-1.5em;" <%= product && product.showOnHome ? 'checked' : '' %>>
+                    <label class="form-check-label fw-bold ms-2" for="show_on_home">Show on Home Page</label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-check form-switch p-3 border rounded bg-white h-100">
+                    <input type="checkbox" name="best_seller" id="best_seller" class="form-check-input" style="margin-left:-1.5em;" <%= product && product.bestSeller ? 'checked' : '' %>>
+                    <label class="form-check-label fw-bold ms-2" for="best_seller">Best Seller</label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-check form-switch p-3 border rounded bg-white h-100">
+                    <input type="checkbox" name="emi_available" id="emi_available" class="form-check-input" style="margin-left:-1.5em;" <%= product && product.emiAvailable ? 'checked' : '' %>>
+                    <label class="form-check-label fw-bold ms-2" for="emi_available">EMI Available</label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-check form-switch p-3 border rounded bg-white h-100">
+                    <input type="checkbox" name="installation_included" id="installation_included" class="form-check-input" style="margin-left:-1.5em;" <%= product && product.installationIncluded ? 'checked' : '' %>>
+                    <label class="form-check-label fw-bold ms-2" for="installation_included">Installation Included</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

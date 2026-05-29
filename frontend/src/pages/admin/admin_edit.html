@@ -1,0 +1,11 @@
+<div class="mx-auto mt-4" style="max-width:900px;">
+    <h1 class="h3 fw-bold mb-4">Edit Product: <%= product.name %></h1>
+    <form method="post" class="card p-4 shadow-sm border-0" style="border-radius:12px;">
+        <%- csrfInput %>
+        <%- include('../Form/product_form_fields.html', { product: product, categories: categories, subcategories: subcategories }) %>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-success py-2 fw-bold">Update Product</button>
+            <a href="/admin" class="btn btn-light">Cancel</a>
+        </div>
+    </form>
+</div>

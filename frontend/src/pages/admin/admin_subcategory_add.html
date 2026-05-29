@@ -1,0 +1,22 @@
+<div class="mx-auto mt-4" style="max-width:620px;">
+    <h1 class="h3 fw-bold mb-4">Add New Subcategory</h1>
+    <form method="POST" class="bg-white rounded-3 shadow-sm p-4">
+        <%- csrfInput %>
+        <div class="mb-3">
+            <label for="category_id" class="form-label fw-bold">Parent Category</label>
+            <select class="form-select" id="category_id" name="category_id" required>
+                <option value="">-- Choose a category --</option>
+                <% categories.forEach(function(cat) { %>
+                    <option value="<%= cat._id %>"><%= cat.name %></option>
+                <% }) %>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label fw-bold">Subcategory Name</label>
+            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Front Load, Double Door, Split AC" autofocus>
+            <small class="text-muted">Subcategories are grouped under a parent category.</small>
+        </div>
+        <button type="submit" class="btn btn-success rounded-pill px-4">Add Subcategory</button>
+        <a href="/admin/categories" class="btn btn-secondary rounded-pill px-4">Cancel</a>
+    </form>
+</div>

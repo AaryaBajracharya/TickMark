@@ -1,0 +1,24 @@
+<div class="d-flex justify-content-center align-items-center" style="min-height:70vh;">
+    <div class="card border-0 shadow-sm p-4" style="width:100%;max-width:420px;border-radius:12px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-shield-lock-fill fs-1 text-primary"></i>
+            <h4 class="fw-bold mt-2 mb-0">Admin Login</h4>
+            <p class="text-muted small">Tick Mark Home Appliances</p>
+        </div>
+        <form method="POST" action="/admin/login">
+            <%- csrfInput %>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter username" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Login</button>
+        </form>
+        <div class="text-center mt-3">
+            <a href="/" class="text-muted small text-decoration-none">Back to Store</a>
+        </div>
+    </div>
+</div>

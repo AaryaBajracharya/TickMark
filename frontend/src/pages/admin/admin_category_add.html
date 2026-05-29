@@ -1,0 +1,13 @@
+<div class="mx-auto mt-4" style="max-width:620px;">
+    <h1 class="h3 fw-bold mb-4">Add New Category</h1>
+    <form method="POST" class="bg-white rounded-3 shadow-sm p-4">
+        <%- csrfInput %>
+        <div class="mb-3">
+            <label for="name" class="form-label fw-bold">Category Name</label>
+            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Air Conditioner, Microwave" autofocus>
+            <small class="text-muted">Use consistent naming, for example "Air Conditioner" instead of "AC".</small>
+        </div>
+        <button type="submit" class="btn btn-success rounded-pill px-4">Add Category</button>
+        <a href="/admin/categories" class="btn btn-secondary rounded-pill px-4">Cancel</a>
+    </form>
+</div>

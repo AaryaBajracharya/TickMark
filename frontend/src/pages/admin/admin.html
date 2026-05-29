@@ -1,0 +1,49 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <h1 class="h3 fw-bold mb-0">Admin Dashboard</h1>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="/admin/add" class="btn btn-success rounded-pill">Add Product</a>
+        <a href="/admin/categories" class="btn btn-outline-primary rounded-pill">Categories</a>
+        <a href="/admin/inquiries" class="btn btn-outline-primary rounded-pill">Inquiries</a>
+        <a href="/admin/reviews" class="btn btn-outline-primary rounded-pill">Reviews</a>
+        <a href="/admin/logout" class="btn btn-secondary rounded-pill">Logout</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3"><div class="bg-white shadow-sm rounded-3 p-3"><span class="text-muted small">Products</span><h3 class="mb-0"><%= stats.products %></h3></div></div>
+    <div class="col-6 col-lg-3"><div class="bg-white shadow-sm rounded-3 p-3"><span class="text-muted small">New inquiries</span><h3 class="mb-0"><%= stats.inquiries %></h3></div></div>
+    <div class="col-6 col-lg-3"><div class="bg-white shadow-sm rounded-3 p-3"><span class="text-muted small">Reviews</span><h3 class="mb-0"><%= stats.reviews %></h3></div></div>
+    <div class="col-6 col-lg-3"><div class="bg-white shadow-sm rounded-3 p-3"><span class="text-muted small">Categories / subcategories</span><h3 class="mb-0"><%= stats.categories %> / <%= stats.subcategories %></h3></div></div>
+</div>
+
+<div class="table-responsive bg-white rounded-3 shadow-sm">
+    <table class="table align-middle mb-0">
+        <thead>
+            <tr><th>Product</th><th>Category</th><th>Subcategory</th><th>Price</th><th>Stock</th><th>Featured</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody>
+            <% products.forEach(function(product) { %>
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="<%= product.imageUrl || 'https://via.placeholder.com/80?text=Product' %>" alt="<%= product.name %>" style="width:54px;height:54px;object-fit:contain;">
+                            <div><strong><%= product.name %></strong><br><span class="text-muted small"><%= product.brand || '' %> <%= product.model || '' %></span></div>
+                        </div>
+                    </td>
+                    <td><%= product.category ? product.category.name : '-' %></td>
+                    <td><%= product.subcategory ? product.subcategory.name : '-' %></td>
+                    <td><%= formatCurrency(product.onSale && product.salePrice ? product.salePrice : product.price) %></td>
+                    <td><%= product.stockStatus.replaceAll('_', ' ') %></td>
+                    <td><%= product.showOnHome ? 'Home' : '' %> <%= product.bestSeller ? 'Best seller' : '' %></td>
+                    <td class="text-end">
+                        <a href="/admin/edit/<%= product._id %>" class="btn btn-sm btn-warning">Edit</a>
+                        <form method="post" action="/admin/delete/<%= product._id %>" class="d-inline" onsubmit="return confirm('Delete <%= product.name %>?')">
+                            <%- csrfInput %>
+                            <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
