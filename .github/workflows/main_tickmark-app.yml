@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -23,11 +23,12 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: npm install and build
+      - name: npm install, build, and test
         run: |
           npm install
           npm run build --if-present
-      
+          npm run test --if-present
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -50,13 +51,13 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9B0F8A7309B84407B35FB30ED21E80E4 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D3E544555D4F456FA4CAC682DAC55D1F }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4BA861BF03B9431B9D5E6AF536E4B87F }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D28469C8285E44408B2C1DA272D628C7 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8202EAE70A4F46DC916668C6A3125077 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5B7F27D23D7848F1BC6036CC97645DAF }}
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'tickmark-app'
           slot-name: 'Production'
