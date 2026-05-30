@@ -59,7 +59,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold fs-4" href="/">
                 <img src="/static/img/Weblogi.png" alt="Tick Mark Home Appliances Logo" height="50" class="me-2">
-                <span class="fw-bold fs-4" style="color:#333;">Tick-Mark</span>
+                <span class="fw-bold fs-4" style="color:#333;">Tick Mark</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -68,6 +68,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link <%= path === '/products' ? 'active' : '' %>" href="/products">Products</a></li>
                     <li class="nav-item"><a class="nav-link <%= path === '/contact' ? 'active' : '' %>" href="/contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link <%= path === '/pan' ? 'active' : '' %>" href="/pan">PAN 303063</a></li>
                 </ul>
                 <form class="d-flex mx-auto my-2 my-lg-0" action="/search" method="get" style="max-width:420px;width:100%;">
                     <input class="form-control me-2 rounded-pill" type="search" name="q" value="<%= query.q || '' %>" placeholder="Search TVs, ACs, Fridges..." aria-label="Search">
