@@ -1,19 +1,66 @@
-<section class="bg-white rounded-3 shadow-sm overflow-hidden mb-5">
-    <div class="row align-items-center g-0">
-        <div class="col-lg-6 p-4 p-lg-5">
-            <span class="badge badge-soft rounded-pill px-3 py-2 mb-3">Home appliances in Lalitpur</span>
-            <h1 class="display-5 fw-bold mb-3">Reliable appliances, local support, better deals.</h1>
-            <p class="lead text-muted mb-4">Shop TVs, refrigerators, washing machines, ACs, microwaves, vacuums, and kitchen appliances with warranty, delivery, EMI, and installation options.</p>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="/products" class="btn btn-primary rounded-pill px-4 py-2">Shop Products</a>
-                <a href="/contact" class="btn btn-outline-primary rounded-pill px-4 py-2">Ask for Advice</a>
-            </div>
-        </div>
-        <div class="col-lg-6 bg-light text-center p-4">
-            <img src="/static/img/emi.jpg" alt="Tick Mark appliance offers" class="img-fluid" style="max-height:360px;object-fit:contain;">
-        </div>
+<% const bannerSlides = [
+    {
+        badge: 'Home appliances in Lalitpur',
+        title: 'Reliable appliances, local support, better deals.',
+        text: 'Shop TVs, refrigerators, washing machines, ACs, microwaves, vacuums, and kitchen appliances with warranty, delivery, EMI, and installation options.',
+        image: '/static/img/emi.jpg',
+        imageAlt: 'Tick Mark appliance offers',
+        primary: { href: '/products', label: 'Shop Products' },
+        secondary: { href: '/contact', label: 'Ask for Advice' }
+    },
+    {
+        badge: 'Flexible payments',
+        title: 'EMI options on selected products.',
+        text: 'Bring home the appliances you need today and spread the cost with easy EMI plans on qualifying TVs, fridges, ACs, and more.',
+        image: '/static/img/emi.jpg',
+        imageAlt: 'EMI offers at Tick Mark',
+        primary: { href: '/products', label: 'Browse EMI Deals' },
+        secondary: { href: '/contact', label: 'Check Eligibility' }
+    },
+    {
+        badge: 'Limited-time savings',
+        title: 'Hot deals on top brands.',
+        text: 'Save on LG, Haier, TCL, Godrej, and more. Explore discounted appliances while stocks last.',
+        image: '/static/img/brands/images.jpg',
+        imageAlt: 'Appliance sale at Tick Mark',
+        primary: { href: '/products?sale=on', label: 'View Sale' },
+        secondary: { href: '/products', label: 'See All Products' }
+    }
+]; %>
+
+<div id="homeBannerCarousel" class="carousel slide home-banner-carousel bg-white rounded-3 shadow-sm overflow-hidden mb-5" data-bs-ride="carousel" data-bs-interval="5500" data-bs-pause="hover">
+    <div class="carousel-indicators">
+        <% bannerSlides.forEach(function(slide, index) { %>
+            <button type="button" data-bs-target="#homeBannerCarousel" data-bs-slide-to="<%= index %>" class="<%= index === 0 ? 'active' : '' %>" aria-label="Banner slide <%= index + 1 %>"></button>
+        <% }) %>
     </div>
-</section>
+    <div class="carousel-inner">
+        <% bannerSlides.forEach(function(slide, index) { %>
+            <div class="carousel-item<%= index === 0 ? ' active' : '' %>">
+                <div class="row align-items-center g-0">
+                    <div class="col-lg-6 p-4 p-lg-5">
+                        <span class="badge badge-soft rounded-pill px-3 py-2 mb-3"><%= slide.badge %></span>
+                        <h1 class="display-5 fw-bold mb-3"><%= slide.title %></h1>
+                        <p class="lead text-muted mb-4"><%= slide.text %></p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="<%= slide.primary.href %>" class="btn btn-primary rounded-pill px-4 py-2"><%= slide.primary.label %></a>
+                            <a href="<%= slide.secondary.href %>" class="btn btn-outline-primary rounded-pill px-4 py-2"><%= slide.secondary.label %></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 bg-light text-center p-4">
+                        <img src="<%= slide.image %>" alt="<%= slide.imageAlt %>" class="img-fluid home-banner-image">
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="prev" aria-label="Previous banner">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="next" aria-label="Next banner">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+</div>
 
 <section class="mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
