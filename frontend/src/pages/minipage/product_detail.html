@@ -1,10 +1,13 @@
 <div class="row bg-white rounded-3 shadow-sm p-4 g-4">
     <div class="col-md-5 text-center">
-        <img src="<%= product.imageUrl || 'https://via.placeholder.com/600x450?text=Product' %>" alt="<%= product.name %>" class="img-fluid rounded-3 detail-image">
-        <% if (product.galleryImages && product.galleryImages.length) { %>
-            <div class="d-flex gap-2 mt-3 overflow-auto">
-                <% product.galleryImages.forEach(function(url) { %>
-                    <img src="<%= url %>" alt="<%= product.name %>" class="border rounded p-1 bg-white" style="width:76px;height:76px;object-fit:contain;">
+        <% const mainImageUrl = product.imageUrl || 'https://via.placeholder.com/600x450?text=Product'; %>
+        <img id="product-main-image" src="<%= mainImageUrl %>" alt="<%= product.name %>" class="img-fluid rounded-3 detail-image">
+        <% const galleryUrls = (product.galleryImages || []).filter(function(url) { return url && url !== mainImageUrl; }); %>
+        <% if (galleryUrls.length) { %>
+            <div class="d-flex gap-2 mt-3 overflow-auto justify-content-center" id="product-gallery">
+                <img src="<%= mainImageUrl %>" alt="<%= product.name %>" class="product-gallery-thumb border rounded p-1 bg-white active" data-src="<%= mainImageUrl %>" style="width:76px;height:76px;object-fit:contain;cursor:pointer;">
+                <% galleryUrls.forEach(function(url) { %>
+                    <img src="<%= url %>" alt="<%= product.name %>" class="product-gallery-thumb border rounded p-1 bg-white" data-src="<%= url %>" style="width:76px;height:76px;object-fit:contain;cursor:pointer;">
                 <% }) %>
             </div>
         <% } %>
@@ -118,6 +121,24 @@
         </div>
     </div>
 </section>
+
+<script>
+(function () {
+    const mainImage = document.getElementById('product-main-image');
+    const gallery = document.getElementById('product-gallery');
+    if (!mainImage || !gallery) return;
+
+    gallery.addEventListener('click', function (event) {
+        const thumb = event.target.closest('.product-gallery-thumb');
+        if (!thumb || !thumb.dataset.src) return;
+
+        mainImage.src = thumb.dataset.src;
+        gallery.querySelectorAll('.product-gallery-thumb').forEach(function (item) {
+            item.classList.toggle('active', item === thumb);
+        });
+    });
+})();
+</script>
 
 <% if (similarProducts && similarProducts.length) { %>
     <section class="mt-5">
