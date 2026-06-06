@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tick Mark Home Appliances</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
@@ -35,21 +38,71 @@
         .product-gallery-thumb.active { opacity: 1; border-color: var(--brand-green) !important; box-shadow: 0 0 0 2px rgba(141,176,33,0.35); }
         .spec-table th { width: 36%; color: #52616d; }
         .badge-soft { background: rgba(141,176,33,0.12); color: #536b12; }
+        .home-banner-carousel .carousel-inner { min-height: 380px; }
         .home-banner-carousel .carousel-item { min-height: 380px; }
         .home-banner-image { max-height: 360px; object-fit: contain; width: 100%; }
+        .home-banner-carousel .carousel-indicators {
+            justify-content: flex-start;
+            left: 0;
+            right: auto;
+            margin-left: 3.5rem;
+            margin-right: 0;
+            margin-bottom: 1.25rem;
+        }
         .home-banner-carousel .carousel-indicators [data-bs-target] {
             width: 10px; height: 10px; border-radius: 50%; background-color: var(--brand-green); opacity: 0.35; border: 0;
         }
         .home-banner-carousel .carousel-indicators .active { opacity: 1; }
+        .home-banner-carousel h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        .home-banner-carousel .home-banner-text {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            line-height: 1.65;
+            color: #5a6570 !important;
+        }
         .home-banner-carousel .carousel-control-prev,
-        .home-banner-carousel .carousel-control-next { width: 8%; opacity: 0.85; }
+        .home-banner-carousel .carousel-control-next {
+            width: 44px;
+            height: 44px;
+            top: 50%;
+            bottom: auto;
+            transform: translateY(-50%);
+            opacity: 1;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+        }
+        .home-banner-carousel .carousel-control-prev { left: 12px; }
+        .home-banner-carousel .carousel-control-next { right: 12px; }
+        .home-banner-carousel .carousel-item .col-lg-6:first-child {
+            padding-left: 3.5rem;
+        }
         .home-banner-carousel .carousel-control-prev-icon,
         .home-banner-carousel .carousel-control-next-icon {
+            width: 1.25rem;
+            height: 1.25rem;
             filter: invert(48%) sepia(79%) saturate(438%) hue-rotate(38deg) brightness(91%) contrast(88%);
         }
         @media (max-width: 991.98px) {
-            .home-banner-carousel .carousel-item { min-height: auto; }
             .home-banner-image { max-height: 260px; }
+            .home-banner-carousel .carousel-control-prev,
+            .home-banner-carousel .carousel-control-next {
+                top: 50%;
+                bottom: auto;
+                transform: translateY(-50%);
+            }
+            .home-banner-carousel .carousel-control-prev { left: 12px; }
+            .home-banner-carousel .carousel-control-next { right: 12px; }
+            .home-banner-carousel .carousel-item .col-lg-6:first-child {
+                padding-left: 3rem;
+            }
+            .home-banner-carousel .carousel-indicators {
+                margin-left: 1.5rem;
+            }
         }
         .whatsapp-float {
             position: fixed; width: 60px; height: 60px; bottom: 40px; right: 30px;
@@ -121,6 +174,45 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function equalizeHomeBannerHeight() {
+            const carousel = document.getElementById('homeBannerCarousel');
+            if (!carousel) return;
+            const inner = carousel.querySelector('.carousel-inner');
+            const items = carousel.querySelectorAll('.carousel-item');
+            if (!inner || !items.length) return;
+
+            inner.style.minHeight = '';
+            let maxHeight = 0;
+            items.forEach(function (item) {
+                const clone = item.cloneNode(true);
+                clone.classList.add('active');
+                clone.style.visibility = 'hidden';
+                clone.style.position = 'absolute';
+                clone.style.display = 'block';
+                inner.appendChild(clone);
+                maxHeight = Math.max(maxHeight, clone.offsetHeight);
+                clone.remove();
+            });
+            if (maxHeight > 0) {
+                inner.style.minHeight = maxHeight + 'px';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const carouselEl = document.getElementById('homeBannerCarousel');
+            if (carouselEl) {
+                const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl, {
+                    interval: 5000,
+                    pause: 'hover',
+                    wrap: true
+                });
+                equalizeHomeBannerHeight();
+                carousel.cycle();
+            }
+        });
+
+        window.addEventListener('resize', equalizeHomeBannerHeight);
+
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'A') {
                 e.preventDefault();
